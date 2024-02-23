@@ -1,0 +1,52 @@
+<h1>
+  {{title}}
+</h1>
+
+<nav class="navbar navbar-inverse navbar-fixed-top">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+      <a class="navbar-brand" href="#">voip_admin</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li *ngIf="userLogged && userLogged.groups && userLogged.groups.admin" routerLinkActive="active">
+          <a routerLink="/users">Users</a>
+        </li>
+        <li *ngIf="userLogged && userLogged.groups && userLogged.groups.admin" routerLinkActive="active">
+          <a routerLink="/clients">Clients</a>
+        </li>
+        <li *ngIf="userLogged && userLogged.groups && userLogged.groups.admin" routerLinkActive="active">
+          <a routerLink="/gateways">Gateways</a>
+        </li>
+        <li *ngIf="userLogged && userLogged.groups && userLogged.groups.admin" routerLinkActive="active">
+          <a routerLink="/trunks">Trunks</a>
+        </li>
+        <li *ngIf="userLogged && userLogged.groups && userLogged.groups.admin" routerLinkActive="active">
+          <a routerLink="/statistic">Statistic</a>
+        </li>
+        <li *ngIf="userLogged && userLogged.groups && userLogged.groups.admin" routerLinkActive="active">
+          <a routerLink="/blacklist">BlackList</a>
+        </li>
+        <li *ngIf="userLogged && userLogged.groups && userLogged.groups.admin" routerLinkActive="active">
+          <a routerLink="/sip-balancer/edit">SipChannels</a>
+        </li>
+        <li *ngIf="!userLogged" routerLinkActive="active"><a routerLink="/users/login">Login</a></li>
+        <li *ngIf="userLogged" class="pull-right text-muted">Your logged in as: <b>{{userLogged.name}}</b>
+          <button type="button" routerLink="/users/login" class="btn btn-sm btn-danger">Logout</button>
+        </li>
+      </ul>
+    </div>
+    <!--/.nav-collapse -->
+  </div>
+</nav>
+
+
+<div class="container-fluid" style='margin-top: 50px;'>
+  <router-outlet></router-outlet>
+</div>

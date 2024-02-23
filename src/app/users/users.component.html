@@ -1,0 +1,57 @@
+<h4>Users:</h4>
+<div class="row">
+    <div class="col-sm-4">
+        <input type="text" class="form-control input-sm" [(ngModel)]="findCondition" name="findCondition" placeholder="Name | Login | Email">
+    </div>
+</div>
+<br/>
+<div class="row">    
+    <div class="col-sm-4">
+        <a (click)="onEdit({_id:'000000000000000000000000'})" class="btn btn-info btn-sm"><i class="glyphicon glyphicon-plus"></i> Create</a>   
+    </div>     
+</div>
+<br/>
+<table class="table table-condensed table-bordered">
+    <tr>
+        <th>Email</th>
+        <th>Name</th>
+        <th>Groups</th>
+        <th></th>
+    </tr>
+    <tr *ngFor="let user of users | findUsers:findCondition">
+        <td>{{user.email}}</td>
+        <td>{{user.name}}</td>
+        <td>
+            <span *ngFor="let group of groups">
+                <span *ngIf="user.groups && user.groups[group]"> {{group}} </span>
+            </span> 
+        </td>
+        <td>
+            <a (click)="onEdit(user)"><i class="glyphicon glyphicon-edit"></i></a>
+            <a (click)="onDelete(user)" data-toggle="confirmation-singleton" data-placement="left" data-toggle="modal" data-target="#confirm-delete"><i class="glyphicon glyphicon-remove"></i></a>
+        </td>
+    </tr>    
+</table>
+
+<div class="row">    
+    <div class="col-sm-4">
+        <a (click)="onEdit({_id:''})" class="btn btn-info btn-sm"><i class="glyphicon glyphicon-plus"></i> Create</a>   
+    </div>     
+</div>
+
+<div class="modal fade" id="confirm-delete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4>Confirm remove!</h4>
+            </div>
+            <div class="modal-body">
+                Are you sure?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                <a class="btn btn-danger btn-ok" data-dismiss="modal" (click)="onDeleteConfirm()">Delete</a>
+            </div>
+        </div>
+    </div>
+</div>

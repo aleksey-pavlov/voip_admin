@@ -1,0 +1,83 @@
+<h4>Gateways</h4>
+
+<div class="row">
+    <div class="col-sm-4">
+        <a (click)="onCreate()" class="btn btn-info btn-sm"><i class="glyphicon glyphicon-plus"></i> Create</a>
+    </div>
+</div>
+<br/>
+<table class="table-bordered table-hover table">
+    <tr>
+        <th>#</th>
+        <th>name</th>
+        <th>ports / <b class="text-success">active</b> / <b class="text-warning">resend</b></th>
+        <th>providers</th>
+        <th>boxes</th>
+        <th>status</th>
+        <th>mem / cpu / pid</th>
+        <th></th>
+    </tr>
+    <tr *ngFor="let gateway of gateways" [ngClass]="{'bg-danger':gateway.processInfo.running && !isRegisterOnProvider(gateway) }">
+        <td>
+            <a *ngIf="gateway.adminUrl" href="http://{{gateway.adminUrl}}" target="_blank">{{gateway._id}}</a>
+            <span *ngIf="!gateway.adminUrl">{{gateway._id}}</span>
+        </td>
+        <td>{{gateway.name}}</td>
+        <td>
+            <b>{{gateway.portsState.total}}</b> / 
+            <b class="text-success">{{gateway.portsState.active}}</b> /
+            <b class="text-warning">{{gateway.portsState.resend}}</b>
+        </td>
+        <td><small>{{gateway.portsState.providers | json}}</small></td>
+        <td>
+            <i class="text-warning">outbox: {{gateway.boxesState.outbox}}</i> 
+            <a *ngIf="!processEvacuation" (click)="onEvacuation(gateway)"><i class="glyphicon glyphicon-log-out"></i></a>
+            <a (click)="onOutboxStat(gateway)" data-toggle="confirmation-singleton" data-placement="left" data-toggle="modal" data-target="#outbox-stat"><i class="glyphicon glyphicon-zoom-in"></i></a>
+            <img *ngIf="processEvacuation" src="./assets/images/loader.gif" width="15" />;
+
+            <i class="text-info">sentbox: {{gateway.boxesState.sentbox}}</i>;
+        </td>
+        <td>
+            <img *ngIf="gateway.processInfo.getPending()" src="./assets/images/loader.gif" width="15" />
+            <a *ngIf="!gateway.processInfo.getPending() && gateway.processInfo.running" (click)="onStopGateway(gateway)"><i class="glyphicon glyphicon-pause"></i></a>
+            <a *ngIf="!gateway.processInfo.getPending() && !gateway.processInfo.running" (click)="onStartGateway(gateway)"><i class="glyphicon glyphicon-play"></i></a>
+        </td>
+        <td>{{gateway.processInfo.monit_mem}}Mb / {{gateway.processInfo.monit_cpu}}% / {{gateway.processInfo.pid}}</td>
+        <td>
+            <a (click)="onEdit(gateway)"><i class="glyphicon glyphicon-edit"></i></a>
+        </td>
+    </tr>
+</table>
+<div class="row">
+    <div class="col-sm-4">
+        <a (click)="onCreate()" class="btn btn-info btn-sm"><i class="glyphicon glyphicon-plus"></i> Create</a>
+    </div>
+</div>
+
+<h4>Gateways provider map:</h4>
+<div class="row">
+    <div style="background: #f9faff;
+    border: 1px solid #5bc0de;
+    margin-left: 15px;" class="col-sm-3">
+        <ngx-json-viewer [json]="gatewaysProviderMap"></ngx-json-viewer>
+    </div>
+</div>
+
+<div class="modal fade" id="outbox-stat" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4>Messages by provider:</h4>
+            </div>
+            <div class="modal-body">
+                <div *ngFor="let provider of outboxStat | keys" class="row">
+                    <div class="col-sm-4"><b>{{provider}}</b></div>
+                    <div class="col-sm-4">{{outboxStat[provider]}}</div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>

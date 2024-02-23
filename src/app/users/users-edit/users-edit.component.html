@@ -1,0 +1,48 @@
+<div *ngIf="user">
+<form class="col-sm-4 form-horizontal" role="form" (ngSubmit)="onSubmit()">
+
+    <div class="form-group">
+        <table class="table table-bordered">
+            <tr>
+                <th>created_at</th><td>{{user.created_at}}</td>                
+            </tr>
+            <tr>
+                <th>updated_at</th><td>{{user.updated_at}}</td>
+            </tr>
+            <tr>
+                <th>authed_at</th><td>{{user.authed_at}}</td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="form-group">
+        <label class="control-label">Email:</label>
+        <input class="form-control input-sm" [(ngModel)]="user.email" name="email">
+    </div>
+
+    <div class="form-group">
+        <label class="control-label">Name:</label>
+        <input class="form-control input-sm" [(ngModel)]="user.name" name="name">
+    </div>
+
+    <div class="form-group">
+
+        <label class="control-label">Groups:</label>
+        <select class="form-control input-sm" multiple="multiple" (change)="onSelectGroups($event)">
+            <option *ngFor="let group of groups" [value]="group" [selected]="user.groups&&user.groups[group]">{{group}}</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label class="control-label">Password:</label>
+        <input class="form-control input-sm" [(ngModel)]="user.password" name="password">
+    </div>
+
+    <div class="form-group">
+        <label class="control-label">Retry password:</label>
+        <input class="form-control input-sm" [(ngModel)]="confirm_password" name="confirm_password">
+    </div>
+
+    <button type="submit" class="btn btn-success btn-sm">Save</button>
+</form>
+</div>

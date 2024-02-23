@@ -1,0 +1,17 @@
+/* You can add global styles to this file, and also import other style files */
+tr:nth-child(even) {background: #FBFBFB}
+tr:nth-child(odd) {background: #FFFFFF}
+
+tr.bg-warning {
+    background-color: #fcf8e3;
+}
+
+tr.bg-danger {
+    background-color: #f2dede;
+}
+
+tr.bg-success {
+    background-color: #dff0d8;
+}
+
+a { cursor: pointer; }

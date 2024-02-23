@@ -1,0 +1,77 @@
+<h4>Clients:</h4>
+
+<div class="row">
+    <div class="col-sm-4">
+        <a (click)="onEdit({_id:'000000000000000000000000'})" class="btn btn-info btn-sm"><i
+                class="glyphicon glyphicon-plus"></i> Create</a>
+        <a (click)="onSync()" class="btn btn-primary btn-sm"><i class="glyphicon glyphicon-refresh"></i> Sync</a>
+    </div>
+</div>
+<br />
+<table class="table table-condensed table-bordered">
+    <tr>
+        <th>#</th>
+        <th>email</th>
+        <th>active</th>
+        <th>smsTotal</th>
+        <th>smsDaily</th>
+        <th>voiceTotal</th>
+        <th>voiceDaily</th>
+        <th>voiceBandwidthLimit</th>
+        <th>voiceRetryLimit</th>
+        <th>voiceRetryDelayLimit</th>
+        <th>voiceTrunk</th>
+        <th>voiceTrunkDial</th>
+        <th>authAt</th>
+        <th></th>
+    </tr>
+    <tr *ngFor="let client of clients">
+        <td>{{client.uid}}</td>
+        <td>{{client.email}}</td>
+        <td><i *ngIf="client.active" class="glyphicon glyphicon-ok"></i></td>
+        <td>{{client.sentTotal}}</td>
+        <td>{{client.statDaily.sentMessages}}/{{client.dailyLimit}}</td>
+        <td>{{client.voiceSentTotal}}</td>
+        <td>{{client.voiceStatDaily.sentMessages}}/{{client.voiceDailyLimit}}</td>
+        <td>{{client.voiceBandwidthLimit}}/{{client.voiceQueue}}</td>
+        <td>{{client.voiceRetryLimit}}</td>
+        <td>{{client.voiceRetryDelayLimit}}</td>
+        <td>{{trunks[client.voiceTrunkId]}}</td>
+        <td>{{trunks[client.voiceReservableTrunkId]}}</td>
+        <td>{{client.authAt*1000 | date:'y-MM-dd H:mm:ss'}}</td>
+        <td>
+            <a (click)="onEdit(client)" class="text-primary"><i class="glyphicon glyphicon-edit"></i></a>&nbsp;&nbsp;
+            <a (click)="onCopy(client)" class="text-info"><i class="glyphicon glyphicon-duplicate"></i></a>&nbsp;&nbsp;
+            <a (click)="onRemove(client)" class="text-danger" data-toggle="confirmation-singleton" data-placement="left"
+                data-toggle="modal" data-target="#confirm-remove">
+                <i class="glyphicon glyphicon-remove"></i>
+            </a>
+        </td>
+    </tr>
+</table>
+<div class="row">
+    <div class="col-sm-4">
+        <a (click)="onEdit({_id:'000000000000000000000000'})" class="btn btn-info btn-sm"><i
+                class="glyphicon glyphicon-plus"></i> Create</a>
+        <a (click)="onSync()" class="btn btn-primary btn-sm"><i class="glyphicon glyphicon-refresh"></i> Sync</a>
+    </div>
+</div>
+<br />
+
+<div class="modal fade" id="confirm-remove" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4>Confirm remove!</h4>
+            </div>
+            <div class="modal-body">
+                Are you sure?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                <a class="btn btn-danger btn-ok" (click)="onRemoveConfirm()">Remove</a>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,149 @@
+<div *ngIf="client" class="container-fluid">
+    <div class="row">
+        <table class="table table-condensed table-bordered">
+            <tr>
+                <th>_id</th>
+                <td>{{client._id}}</td>
+            </tr>
+            <tr>
+                <th>uid</th>
+                <td>{{client.uid}}</td>
+            </tr>
+            <tr>
+                <th>authKey</th>
+                <td><input class="form-control input-sm" name="ip" [(ngModel)]="client.authKey" /></td>
+            </tr>
+            <tr>
+                <th>smsTotal</th>
+                <td>{{client.sentTotal}}</td>
+            </tr>
+            <tr>
+                <th>smsDaily</th>
+                <td>{{client.statDaily.sentMessages}}/{{client.dailyLimit}}</td>
+            </tr>
+            <tr>
+                <th>voiceTotal</th>
+                <td>{{client.voiceSentTotal}}</td>
+            </tr>
+            <tr>
+                <th>voiceDaily</th>
+                <td>{{client.voiceStatDaily.sentMessages}}/{{client.voiceDailyLimit}}</td>
+            </tr>
+            <tr>
+                <th>authAt</th>
+                <td>{{client.authAt*1000 | date:'y-MM-dd H:mm:ss'}}</td>
+            </tr>
+        </table>
+    </div>
+
+    <form role="form" class="form-horizontal" (ngSubmit)="onSubmit()">
+        <button type="submit" class="btn btn-success btn-sm">Save</button>
+        <div class="row">
+            <div class="col-md-2">
+                <h3>General</h3>
+                <h4>Info:</h4>
+                <div class="form-group">
+                    <label for="email" class="control-label">Email:</label>
+                    <input class="form-control input-sm" name="email" [(ngModel)]="client.email" />
+                </div>
+
+                <div class="form-group">
+                    <label for="sendStatusUrl" class="control-label">SendStatusUrl:</label>
+                    <input class="form-control input-sm" name="sendStatusUrl" [(ngModel)]="client.sendStatusUrl" />
+                </div>
+
+                <div class="form-group">
+                    <label for="resolveTaskUrl" class="control-label">ResolveTaskUrl:</label>
+                    <input class="form-control input-sm" name="resolveTaskUrl" [(ngModel)]="client.resolveTaskUrl" />
+                </div>
+
+                <h4>Secure:</h4>
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" [(ngModel)]="client.ipVerification" name="ipVerification"> IP
+                        verification
+                    </label>
+                </div>
+
+                <div class="form-group" *ngIf="client.ipVerification">
+                    <label for="ip" class="control-label">Allowed IP:</label>
+                    <input class="form-control input-sm" name="ip" [(ngModel)]="client.ip" />
+                </div>
+
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" [(ngModel)]="client.active" name="active"> Active
+                    </label>
+                </div>
+
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" [(ngModel)]="client.blocked" name="blocked"> Blocked
+                    </label>
+                </div>
+            </div>
+            <div class="col-sm-1"></div>
+            <div class="col-md-2">
+                <h3>VOIP:</h3>
+                <h4>Limits</h4>
+                <div class="form-group">
+                    <label for="voiceBandwidthLimit" class="control-label">voiceBandwidthLimit:</label>
+                    <input type="number" class="form-control input-sm" name="voiceBandwidthLimit"
+                        [(ngModel)]="client.voiceBandwidthLimit" />
+                </div>
+
+                <div class="form-group">
+                    <label for="voiceRetryLimit" class="control-label">voiceRetryLimit:</label>
+                    <input type="number" class="form-control input-sm" name="voiceRetryLimit"
+                        [(ngModel)]="client.voiceRetryLimit" />
+                </div>
+
+                <div class="form-group">
+                    <label for="voiceRetryDelayLimit" class="control-label">voiceRetryDelayLimit:</label>
+                    <input type="number" class="form-control input-sm" name="voiceRetryDelayLimit"
+                        [(ngModel)]="client.voiceRetryDelayLimit" />
+                </div>
+
+                <div class="form-group">
+                    <label for="voiceDailyLimit" class="control-label">voiceDailyLimit:</label>
+                    <input type="number" class="form-control input-sm" name="voiceDailyLimit"
+                        [(ngModel)]="client.voiceDailyLimit" />
+                </div>
+
+                <h4>Distribution</h4>
+                <div class="form-group">
+                    <label for="voiceTrunkId" class="control-label">voiceTrunk:</label>
+                    <select class="form-control input-sm" name="voiceTrunkId" [(ngModel)]="client.voiceTrunkId">
+                        <option value=''>---</option>
+                        <option *ngFor="let trunk of trunks" [value]="trunk._id">{{trunk.comment}}
+                            <{{trunk._id}}>
+                        </option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="voiceReservableTrunkId" class="control-label">voiceTrunkDial:</label>
+                    <select class="form-control input-sm" name="voiceReservableTrunkId" [(ngModel)]="client.voiceReservableTrunkId">
+                        <option value=''>---</option>
+                        <option *ngFor="let trunk of reservableTrunks" [value]="trunk._id">{{trunk.comment}}
+                            {{trunk._id}}>
+                        </option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-sm-1"></div>
+            <div class="col-md-2">
+                <h3>SMS:</h3>
+                <h4>Limits</h4>
+                <div class="form-group">
+                    <label for="dailyLimit" class="control-label">dailyLimit:</label>
+                    <input type="number" class="form-control input-sm" name="dailyLimit"
+                        [(ngModel)]="client.dailyLimit" />
+                </div>
+            </div>
+
+        </div>
+
+        <button type="submit" class="btn btn-success btn-sm">Save</button>
+    </form>
+</div>

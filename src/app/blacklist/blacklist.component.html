@@ -1,0 +1,48 @@
+<h4>BlackList:</h4>
+
+<form role="form" class="col-sm-4 form-inline" (ngSubmit)="onSubmit()">
+    <div class="form-group">
+        <label for="recipient" class="control-label">Recipient:</label>
+        <input class="form-control input-sm" name="recipient" [(ngModel)]="recipient.recipient" />
+    </div>
+
+    <button type="submit" class="btn btn-success btn-sm">Add
+        <i class="glyphicon glyphicon-plus"></i>
+    </button>
+</form>
+<br/>
+<br/>
+
+<div class="row">
+    <div class="col-sm-4">
+        <a (click)="onSync()" class="btn btn-primary btn-sm">
+            <i class="glyphicon glyphicon-refresh"></i> Sync</a>
+    </div>
+</div>
+<br/>
+<table class="table table-condensed table-bordered">
+    <tr>
+        <th>#</th>
+        <th>recipient</th>
+        <th>created</th>
+        <th></th>
+    </tr>
+    <tr *ngFor="let recipient of recipients, let i = index">
+        <td>{{i}}</td>
+        <td>{{recipient.recipient}}</td>
+        <td>{{recipient.created_at}}</td>
+        <td>
+            <a (click)="onRemove(recipient._id)">
+                <i class="glyphicon glyphicon-remove"></i>
+            </a>
+        </td>
+
+    </tr>
+</table>
+
+<div class="row">
+    <div class="col-sm-4">
+        <a (click)="onSync()" class="btn btn-primary btn-sm">
+            <i class="glyphicon glyphicon-refresh"></i> Sync</a>
+    </div>
+</div>

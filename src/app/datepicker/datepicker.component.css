@@ -1,0 +1,48 @@
+ span.day {
+        display: block;
+        float: left;     
+        padding: 2px;
+        margin: 1px;
+        border: 1px solid;
+        width: 25px;
+        cursor: pointer;
+        border-radius: 3px;
+        font-size: 14px;
+    } 
+   
+    span.day.early {
+        background: #FFD5D5;
+    }
+
+    span.day.active {
+        border: 2px solid #606DAD;
+        padding: 1px;
+        background: #B4BAD8;
+    }
+
+    td { background: #F9F9F9; }
+
+    div.datepicker-container {     
+        display: none;
+        position: absolute;
+        padding: 3px;
+        background: #ffffff;
+        border: 3px solid #dddddd;
+        border-radius: 7px;
+        box-shadow: 0px 0px 6px; 
+        z-index: 1;
+    }
+
+    table.datepicker-settings {
+        margin-bottom: 5px;
+    }
+
+    /*input.datepicker { width: 200px;  }*/
+
+    input.datepicker:focus + div.datepicker-container { 
+        display: block;     
+    }
+
+    div.datepicker-container:hover { 
+        display: block;  
+    } 

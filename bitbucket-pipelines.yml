@@ -1,0 +1,19 @@
+image: node:8  
+pipelines:
+  tags:
+    v*:
+    - step:
+        caches:
+          - node
+        script:
+          #- git config --global url."https://${CI_USER}:${CI_PWD}@bitbucket.org/".insteadOf "ssh://git@bitbucket.org/"
+          - npm install
+          - npm run build
+          - docker login $DOCKER_REGISTRY -u $DOCKER_USER -p $DOCKER_PASSWORD
+          - docker build -t $DOCKER_REGISTRY/diadminclient:$BITBUCKET_COMMIT .
+          - docker tag $DOCKER_REGISTRY/diadminclient:$BITBUCKET_COMMIT $DOCKER_REGISTRY/diadminclient
+          - docker push -a $DOCKER_REGISTRY/diadminclient
+
+options:
+  max-time: 5
+  docker: true

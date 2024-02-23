@@ -1,0 +1,33 @@
+<input [(ngModel)]="inputDate" type="text" (keyup)="onChangeInputDate($event.target.value)" class="datepicker form-control input-sm">
+<div class="datepicker-container">
+    <table class="datepicker-settings">
+        <tr>
+            <td>
+                <input [(ngModel)]="selectedYear" type="number" (change)="onSetYear($event.target.value)" class="datepicker-years form-control input-sm"> 
+            </td>
+            <td>
+                <select [(ngModel)]="selectedMonth" (change)="onSetMonth($event.target.value)" class="datepicker-month form-control input-sm">
+                    <option *ngFor="let month of months">{{month}}</option>    
+                </select>
+            </td>
+        </tr>
+    </table>     
+    <table>
+        <tr> 
+            <th></th>           
+            <th>Mo</th>
+            <th>Tu</th>
+            <th>We</th>
+            <th>Th</th>
+            <th>Fr</th>
+            <th>Sa</th> 
+            <th>Su</th>           
+        </tr>
+        <tr *ngFor="let date of dates">
+            <td *ngFor="let d of date, let day=index">
+                <span *ngIf="d>0" [ngClass]="{active:d==selectedDate,day:1,early:day>5}" (click)="onSetDate(d)">{{d}}</span>
+            </td>
+        </tr>
+
+    </table> 
+</div>

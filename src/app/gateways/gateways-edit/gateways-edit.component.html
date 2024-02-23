@@ -1,0 +1,314 @@
+<div *ngIf="gateway" class="container-fluid">
+    <h4>Process monitoring:</h4>
+    <table *ngIf="gateway.processInfo" class="table table-bordered table-condensed table-compressed">
+        <tr>
+            <th>state</th>
+            <th>mem</th>
+            <th>cpu</th>
+            <th>pid</th>
+        </tr>    
+        <tr>
+            <td>
+                <a *ngIf="gateway.processInfo.running" (click)="onStopGateway(gateway)"><i class="glyphicon glyphicon-pause"></i></a>
+                <a *ngIf="!gateway.processInfo.running" (click)="onStartGateway(gateway)"><i class="glyphicon glyphicon-play"></i></a>
+            </td>
+            <td>{{gateway.processInfo.monit_mem}}Mb</td>
+            <td>{{gateway.processInfo.monit_cpu}}%</td>
+            <td>{{gateway.processInfo.pid}}</td>
+        </tr>    
+    </table>
+    <h4>Boxes state:</h4>
+    <table class="table table-bordered table-condensed table-compressed">
+        <tr>
+            <th><i class="text-warning">outbox: </i></th>
+            <th><i class="text-info">sentbox: </i></th>
+        </tr>
+        <tr>
+            <td>{{gateway.boxesState.outbox}}</td>
+            <td>{{gateway.boxesState.sentbox}}</td>
+        </tr>
+    </table>
+    <form class="form-horizontal" role="form" (ngSubmit)="onSubmit()">
+        <div class="row">
+            <div class="col-md-2">
+                <h3>General settings:</h3>
+                <div class="form-group">
+                    <label class="control-label">Ip:</label>
+                    <input class="form-control input-sm" [(ngModel)]="gateway.ip" name="ip">
+                </div>
+                <div class="form-group">
+                    <label class="control-label">Port:</label>
+                    <input type="number" class="form-control input-sm" [(ngModel)]="gateway.port" name="port">
+                </div>
+                <div class="form-group">
+                    <label class="control-label">User:</label>
+                    <input class="form-control input-sm" [(ngModel)]="gateway.user" name="user">
+                </div>
+                <div class="form-group">
+                    <label class="control-label">Password:</label>
+                    <input class="form-control input-sm" [(ngModel)]="gateway.password" name="password">
+                </div>
+                <div class="form-group">
+                    <label class="control-label">Name:</label>
+                    <input class="form-control input-sm" type="text" [(ngModel)]="gateway.name" name="name">
+                </div>
+                <div class="form-group">
+                    <label class="control-label">Location:</label>
+                    <input class="form-control input-sm" type="text" [(ngModel)]="gateway.location" name="location">
+                </div>
+                <div class="form-group">
+                    <label class="control-label">SMS Type:</label>
+                    <select [disabled]="gateway.processInfo.running" class="form-control input-sm" type="text" [(ngModel)]="gateway.messagesType" name="smsType">
+                        <option *ngFor="let messagesType of messagesTypes" [value]="messagesType" >{{messagesType}}</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="control-label">Admin URL:</label>
+                    <input class="form-control input-sm" type="text" [(ngModel)]="gateway.adminUrl" name="adminUrl">
+                </div>
+                <div class="form-group">
+                    <label class="control-label">Manual MobileConfiguration:</label>
+                    <input type="checkbox" [(ngModel)]="gateway.mobileConfigManual" name="mobileConfigManual"> 
+                </div>
+            </div>
+            <div class="col-md-1"></div>
+            <div class="col-md-2">
+                <h3>Process parameters:</h3>
+                <div class="form-group">
+                    <label class="control-label">Max size queue in gateway:</label>
+                    <input class="form-control input-sm" type="number" [(ngModel)]="gateway.maxMsgInQueue" name="maxMsgInQueue">
+                </div>
+                <div class="form-group">
+                    <label class="control-label">Max msg for query result:</label>
+                    <input class="form-control input-sm" type="number" [(ngModel)]="gateway.maxQueryResult" name="maxQueryResult">
+                </div>
+                <div class="form-group">
+                    <label class="control-label">Limit msg for query result:</label>
+                    <input class="form-control input-sm" type="number" [(ngModel)]="gateway.limitMsgQueryResult" name="limitMsgQueryResult">
+                </div>
+                <div class="form-group">
+                    <label class="control-label">Iteration interval (milliseconds):</label>
+                    <input class="form-control input-sm" type="number" [(ngModel)]="gateway.rutineInterval" name="rutineInterval">
+                </div>
+                <div class="form-group">
+                    <label class="control-label">SentboxExpire (seconds):</label>
+                    <input class="form-control input-sm" type="number" [(ngModel)]="gateway.sentBoxExpire" name="sentBoxExpire">
+                </div>
+                <h3>MassEditPorts:</h3>
+                <div class="form-group">
+                    <label class="control-label">MassNumSlots:</label>
+                    <input class="form-control input-sm" type="text" name="massNumSlots" [(ngModel)]="massNumSlots" (keyup)="onChangeMassNumSlots()">
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label">MassDayLimit:</label>
+                    <input class="form-control input-sm" type="text" name="massDayLimit" [(ngModel)]="massDayLimit" (keyup)="onChangeMassDayLimit()">
+                </div>
+                <div class="form-group">
+                    <label class="control-label">MassResetAtDay:</label>
+                    <datepicker [inputDate]="massResetAtDay | date:'y-MM-dd HH:mm:ss'" (onSelectDate)="onChangeMassResetAtDay($event)"></datepicker>
+                </div>
+                <div class="form-group">
+                    <label class="control-label">MassMonthLimit:</label>
+                    <input class="form-control input-sm" type="text" name="massMonthLimit" [(ngModel)]="massMonthLimit" (keyup)="onChangeMassMonthLimit()">
+                </div>
+                <div class="form-group">
+                    <label class="control-label">MassResetAtMonth:</label>
+                    <datepicker [inputDate]="massResetAtMonth | date:'y-MM-dd HH:mm:ss'" (onSelectDate)="onChangeMassResetAtMonth($event)"></datepicker>
+                </div>
+                <div *ngIf="slotsPerPort > 1" class="form-group">
+                    <label class="control-label">MassSetActiveSlot:</label>
+                    <label class="radio-inline" *ngFor="let slot of [0,1,2,3]">                        
+                        <input type="radio" [value]="slot" name="massActiveSlot" [(ngModel)]="massActiveSlot" (change)="onSetMassActiveSlot()"><b>{{"abcd"[slot]}}</b>
+                    </label>
+                </div>
+                <div class="form-group">
+                    <label class="control-label">MassSMSC:</label>
+                    <input class="form-control input-sm" type="text" name="massSMSC" [(ngModel)]="massSMSC" (keyup)="onChangeMassSMSC()">
+                </div>
+            </div>
+            <div class="col-md-1"></div>
+            <div class="col-md-2">
+                <h3>Advanced edit ports:</h3>
+                <div class="form-group">
+                    <label>
+                        all
+                        <input type="checkbox" [(ngModel)]="advancedPortsSelector" name="advancedPortsSelector" (click)="onToggleAdvancedPortsSelector()">
+                    </label>
+                    <label *ngFor="let i of gateway.ports | keys;">
+                        {{gateway.ports[i].info.port}}
+                        <input [(ngModel)]="advancedData.ports[i]" name="advancedData.ports[{{i}}]" type="checkbox">&nbsp;&nbsp;
+                    </label>
+                </div>
+                <div class="form-group">
+                    <label class="control-label">DayLimit:</label>
+                    <input class="form-control input-sm" type="text" name="advancedData.limitDay" [(ngModel)]="advancedData.limitDay">
+                </div>
+                <div class="form-group">
+                    <label class="control-label">Provider:</label>
+                    <select [(ngModel)]="advancedData.provider" name="advancedData.provider">
+                        <option *ngFor="let provider of portProviders" [value]="provider">{{provider}}</option>
+                    </select>
+                </div>
+                <div *ngIf="slotsPerPort > 1" class="form-group">
+                    <label class="control-label">ActiveSlot:</label>
+                    <label class="radio-inline" *ngFor="let slot of [0,1,2,3]">                        
+                        <input type="radio" [value]="slot" name="advancedData.activeSlot" [(ngModel)]="advancedData.activeSlot"><b>{{"abcd"[slot]}}</b>
+                    </label>
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label">Active:</label>
+                    <input type="checkbox" [(ngModel)]="advancedData.active" name="advancedData.active">
+                    <a (click)="onToggleAdvanceInitialActive()">
+                        <i *ngIf="advancedData.initialActive" class="glyphicon glyphicon-lock"></i>
+                        <i *ngIf="!advancedData.initialActive" class="glyphicon glyphicon-pushpin"></i>
+                    </a>
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label">Resend:</label>
+                    <input type="checkbox" [(ngModel)]="advancedData.isResend" name="advancedData.isResend">
+                    <a (click)="onToggleAdvanceInitialIsResend()">
+                        <i *ngIf="advancedData.initialIsResend" class="glyphicon glyphicon-lock"></i>
+                        <i *ngIf="!advancedData.initialIsResend" class="glyphicon glyphicon-pushpin"></i>
+                    </a>
+                </div>
+
+                <div class="form-group">
+                    <button type="button" class="btn btn-sm btn-primary" (click)="onApplyAdvancedData()">Apply</button>
+                    <button type="submit" class="btn btn-sm btn-success">Save</button>
+                    <button type="button" class="btn btn-sm btn-danger" (click)="onClearAdvanceData()">Clear</button>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-3">
+                <h3>Port settings ({{gateway.ports | keys | length}})
+                    <a (click)="onAppendPort()" class="btn btn-success btn-sm">
+                        <i class="glyphicon glyphicon-plus"></i>
+                    </a>
+                    <a class="btn btn-sm btn-danger" (click)="onRemovePort()">
+                        <i class="glyphicon glyphicon-remove"></i>
+                    </a>
+                </h3>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-sm btn-success">Save</button>
+        <div class="row">
+            <div class="col-md-3 port-block" *ngFor="let i of gateway.ports | keys;" [ngClass]="{'bg-warning': gateway.ports[i].isResend, 'bg-success': gateway.ports[i].active, 'bg-danger': !gateway.ports[i].active&&!gateway.ports[i].isResend }">
+                <div class="row">
+                    <div class="col-md-3">
+                        <h4>Port: {{gateway.ports[i].info.port}}</h4>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-2">Active:</div>
+                    <div class="col-md-3">
+                        <input type="checkbox" [(ngModel)]="gateway.ports[i].active" name="gateway.ports[{{i}}].active">
+                        <a (click)="onToggleActiveLock(gateway.ports[i].info.port)">
+                             <i *ngIf="gateway.ports[i].initialActive" class="glyphicon glyphicon-lock"></i>
+                             <i *ngIf="!gateway.ports[i].initialActive" class="glyphicon glyphicon-pushpin"></i>
+                         </a>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-2">Resend:</div>
+                    <div class="col-md-3">
+                        <input type="checkbox" [(ngModel)]="gateway.ports[i].isResend" name="gateway.ports[{{i}}].isResend">
+                        <a (click)="onToggleResendLock(gateway.ports[i].info.port)">
+                             <i *ngIf="gateway.ports[i].initialIsResend" class="glyphicon glyphicon-lock"></i>
+                             <i *ngIf="!gateway.ports[i].initialIsResend" class="glyphicon glyphicon-pushpin"></i>
+                         </a>
+                    </div>
+                </div>
+                <div class="row"><div class="col-xs-2"><b>InDay:</b></div></div>
+                <div class="row">
+                    <div class="col-xs-2">Limit:</div>
+                    <div class="col-xs-4">
+                        <input type="number" class="form-control input-sm" [(ngModel)]="gateway.ports[i].limitDay" name="gateway.ports[{{i}}].limitDay">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-2">ResetAt:</div>
+                    <div class="col-xs-4">
+                        <datepicker [inputDate]="gateway.ports[i].resetDayAt*1000 | date:'y-MM-dd HH:mm:ss'" (onSelectDate)="setResetDayAt($event, gateway.ports[i])"></datepicker>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-2">Stat:</div>
+                    <div class="col-md-4">
+                        <div *ngFor="let sent of gateway.ports[i].numSentBySlot.day; let slot = index">
+                            <input *ngIf="gateway.ports[i].numSlots > 1" type="radio" [value]="slot" [(ngModel)]="gateway.ports[i].activeSlot" name="gateway.ports[{{i}}].activeSlot">
+                            <b>{{"abcd"[slot]}}:{{sent}}</b>
+                        </div>
+                    </div>
+                </div>
+                <div class="row"><div class="col-xs-2"><b>InMonth:</b></div></div>
+                <div class="row">
+                    <div class="col-xs-2">Limit:</div>
+                    <div class="col-xs-4">
+                        <input type="number" class="form-control input-sm" [(ngModel)]="gateway.ports[i].limitMonth" name="gateway.ports[{{i}}].limitMonth">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-2">ResetAt:</div>
+                    <div class="col-xs-4">
+                        <datepicker [inputDate]="gateway.ports[i].resetMonthAt*1000 | date:'y-MM-dd HH:mm:ss'" (onSelectDate)="setResetMonthAt($event, gateway.ports[i])"></datepicker>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-2">Stat:</div>
+                    <div class="col-md-4">
+                        <div *ngFor="let sent of gateway.ports[i].numSentBySlot.month; let slot = index">
+                            <input *ngIf="gateway.ports[i].numSlots > 1" type="radio" [value]="slot" [(ngModel)]="gateway.ports[i].activeSlot" name="gateway.ports[{{i}}].activeSlot">
+                            <b>{{"abcd"[slot]}}:{{sent}}</b>
+                        </div>
+                    </div>
+                </div>
+                <div class="row"><div class="col-xs-2"><b>System:</b></div></div>
+                <div class="row"></div>
+                <div class="row">
+                    <div class="col-md-2">Slots:</div>
+                    <div class="col-md-4">
+                        <input type="number" class="form-control input-sm" [(ngModel)]="gateway.ports[i].numSlots" name="gateway.ports[{{i}}].numSlots">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-2">Imsi:</div>
+                    <div class="col-md-5">{{gateway.ports[i].info.imsi}}</div>
+                </div>
+                <div class="row">
+                    <div class="col-md-2">Reg:</div>
+                    <div class="col-md-5">{{gateway.ports[i].info.reg}}</div>
+                </div>
+                <div class="row">
+                    <div class="col-md-2">Smsc:</div>
+                    <div class="col-md-5">{{gateway.ports[i].info.smsc}}</div>
+                </div>
+                <div class="row">
+                    <div class="col-md-2"></div>
+                    <div class="col-md-5"><input [(ngModel)]="gateway.ports[i].mobileConfig.SMSC" name="gateway.ports[{{i}}].mobileConfig.SMSC" /></div>
+                </div>
+                <div class="row">
+                    <div class="col-md-2">Provider:</div>
+                    <div class="col-md-5">
+                        <select [(ngModel)]="gateway.ports[i].provider" name="gateway.ports[{{i}}].provider">
+                            <option *ngFor="let provider of portProviders" [value]="provider">{{provider}}</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-2">MgStatus:</div>
+                    <div class="col-md-5">
+                        <select [(ngModel)]="gateway.ports[i].alwaysGiveStatus" name="gateway.ports[{{i}}].alwaysGiveStatus">
+                            <option *ngFor="let status of messageStatus" [value]="status">{{status}}</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-sm btn-success">Save</button>
+    </form>
+</div>
+<!--<textarea rows=20 cols="250">{{diagnostic()}}</textarea>-->

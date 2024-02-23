@@ -1,0 +1,135 @@
+<div *ngIf="trunk" class="container-fluid">
+    <form class="form-horizontal" role="form" (ngSubmit)="onSubmit()">
+        <br/><button type="submit" class="btn btn-sm btn-success">Save</button>
+        <div class="row">
+            <div class="col-md-2">
+                <h3>General settings</h3>
+                <div class="form-group">
+                    <label class="control-label">DebugMode:</label>
+                    <input type="checkbox" [(ngModel)]="trunk.debugMode" name="debugMode">
+                </div>
+                <div class="form-group">
+                    <label class="control-label">DevMode:</label>
+                    <input type="checkbox" [(ngModel)]="trunk.devMode" name="devMode">
+                </div>
+                <div class="form-group">
+                    <label class="control-label">Comment:</label>
+                    <input class="form-control input-sm" type="text" [(ngModel)]="trunk.comment" name="comment">
+                </div>
+                <div class="form-group">
+                    <label class="control-label">CronInterval:</label>
+                    <input class="form-control input-sm" [(ngModel)]="trunk.cronInterval" name="cronInterval"
+                        type="number">
+                </div>
+                <div class="form-group">
+                    <label class="control-label">Bandwidth:</label>
+                    <input class="form-control input-sm" [(ngModel)]="trunk.bandwidth" name="bandwidth" type="number">
+                </div>
+                <div class="form-group">
+                    <label class="control-label">BatchSize:</label>
+                    <input class="form-control input-sm" [(ngModel)]="trunk.batchSize" name="batchSize" type="number">
+                </div>
+                <div class="form-group">
+                    <label class="control-label">Notice:</label>
+                    <textarea class="form-control" [(ngModel)]="trunk.notice" name="notice"></textarea>
+                </div>
+                
+
+                <h3>Alerts settings</h3>
+                <div class="form-group">
+                    <label class="control-label">ThresholdQueue:</label>
+                    <input class="form-control input-sm" [(ngModel)]="trunk.thresholdQueueNotify" name="thresholdQueueNotify"
+                        type="number">
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-sm btn-success">Save</button>
+                </div>
+
+                <h3>Calling limits</h3>
+                <div class="form-group">
+                    <label class="control-label">MinAllowCallingHour:</label>
+                    <input class="form-control input-sm" [(ngModel)]="trunk.minAllowCallingHour" name="minAllowCallingHour"
+                        type="number">
+                </div>
+                <div class="form-group">
+                    <label class="control-label">MaxAllowCallingHour:</label>
+                    <input class="form-control input-sm" [(ngModel)]="trunk.maxAllowCallingHour" name="maxAllowCallingHour"
+                        type="number">
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-sm btn-success">Save</button>
+                </div>
+
+                
+            </div>
+
+            <div class="col-sm-1"></div>
+            <div class="col-md-2">
+                <h3>Distribution settings</h3>
+                <div class="form-group">
+                    <label class="control-label">Reservable:</label>
+                    <input [disabled]="trunk.processInfo.running" type="checkbox" [(ngModel)]="trunk.reservable" name="reservable">
+                </div>
+                <div class="form-group">
+                    <label class="control-label">Provider:</label>
+                    <select [disabled]="trunk.processInfo.running" [(ngModel)]="trunk.provider" name="trunk.provider" class="form-control input-sm">
+                        <option *ngFor="let provider of providers" [value]="provider">{{provider}}</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="control-label">Id:</label>
+                    <input [disabled]="trunk.processInfo.running" class="form-control input-sm" [(ngModel)]="trunk.id" name="id" type="text">
+                </div>
+                <div class="form-group">
+                    <label class="control-label">Weight:</label>
+                    <input [disabled]="trunk.processInfo.running" class="form-control input-sm" [(ngModel)]="trunk.weight" name="weight" type="number">
+                </div>
+                <div class="form-group">
+                    <label class="control-label">SipChannelTemplate:</label>
+                    <input [disabled]="trunk.processInfo.running" class="form-control input-sm" [(ngModel)]="trunk.sipChannelTemplate"
+                        name="sipChannelTemplate" type="text">
+                </div>
+                <div class="form-group">
+                    <label class="control-label">Default CallerNUM:</label>
+                    <input [disabled]="trunk.processInfo.running" class="form-control input-sm" type="text" [(ngModel)]="trunk.defaultCaller" name="defaultCaller">
+                </div>
+                <div class="form-group">
+                    <label class="control-label">Prefix CallerNUM:</label>
+                    <input class="form-control input-sm" type="text" [(ngModel)]="trunk.callerPrefix" name="callerPrefix">
+                </div>
+                <div class="form-group">
+                    <b>Callers:</b>
+                    <textarea rows="25" class="form-control input-sm" [(ngModel)]="trunk.callers" name="trunk.callers"></textarea>
+                </div>
+                <div  class="form-group">
+                    <button type="submit" class="btn btn-sm btn-success">Save</button>
+                </div>
+            </div>
+            <div class="col-sm-1"></div>
+            <div class="col-md-2">
+                <h3>Secure settings</h3>
+                <div class="form-group">
+                    <label class="control-label">Location:</label>
+                    <input [disabled]="trunk.processInfo.running" class="form-control input-sm" [(ngModel)]="trunk.location" name="location" type="text">
+                </div>
+                <div class="form-group">
+                    <label class="control-label">Host:</label>
+                    <input class="form-control input-sm" [(ngModel)]="trunk.host" name="host" type="text">
+                </div>
+                <div class="form-group">
+                    <label class="control-label">Port:</label>
+                    <input class="form-control input-sm" [(ngModel)]="trunk.port" name="port" type="number">
+                </div>
+                <div class="form-group">
+                    <label class="control-label">User:</label>
+                    <input class="form-control input-sm" [(ngModel)]="trunk.user" name="user" type="text">
+                </div>
+                <div class="form-group">
+                    <label class="control-label">Pass:</label>
+                    <input class="form-control input-sm" [(ngModel)]="trunk.pass" name="pass" type="text">
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<!--<textarea rows=20 cols="250">{{diagnostic()}}</textarea>-->

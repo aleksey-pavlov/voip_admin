@@ -1,0 +1,133 @@
+<h4>Trunks</h4>
+
+<div class="row">
+    <div class="col-sm-2">
+        Auto-Refresh:
+        <select name="selectedRefreshInterval" class="form-control input-sm" [(ngModel)]="selectedRefreshInterval" (change)="onSetAutoRefresh()">
+            <option *ngFor="let i of refreshIntervals" [value]=i.interval>{{i.title}}</option>
+        </select>
+    </div>
+</div><br />
+
+<div class="row">
+    <div class="col-sm-1">
+        <a (click)="onCreate()" class="btn btn-info btn-sm"><i class="glyphicon glyphicon-plus"></i> Create</a>
+    </div>
+</div><br />
+
+<table class="table-bordered table-hover table">
+    <tr>
+        <th>#</th>
+        <th>reservable</th>
+        <th>comment</th>
+        <th>provider</th>
+        <th>id</th>
+        <th>weight</th>
+        <th>bandwidth</th>
+        <th>batch</th>
+        <th>location</th>
+        <th>sipChannelTemplate</th>
+        <th>
+            <span class="text-warning">queue</span> /
+            <span class="text-info">active</span> /
+            <span class="text-danger">retry</span>
+        </th>
+        <th></th>
+        <th></th>
+        <th>mem / cpu / pid</th>
+        <th></th>
+    </tr>
+    <tr *ngFor="let trunk of trunks"
+        [ngClass]="{'bg-danger':trunk.processInfo.running && !isBalancedOnProvider(trunk) && !isRegisteredTrunk(trunk), 'bg-warning': trunk.processInfo.running && isRegisteredTrunk(trunk), 'bg-success': trunk.processInfo.running && isBalancedOnProvider(trunk) }" 
+        tooltip="{{trunk.notice}}">
+        
+        <td>{{trunk._id}}</td>
+        <td><i *ngIf="trunk.reservable" class="glyphicon glyphicon-ok"></i></td>
+        <td>{{trunk.comment}}</td>
+        <td>{{trunk.provider}}</td>
+        <td>{{trunk.id}}</td>
+        <td>{{trunk.weight}}</td>
+        <td>{{trunk.bandwidth}}</td>
+        <td>{{trunk.batchSize}}</td>
+        <td>{{trunk.location}}</td>
+        <td>{{trunk.sipChannelTemplate}}</td>
+        <td>
+            <span class="text-warning">{{trunk.statistic.queue}}</span>
+            <a (click)="onLoadQueueVoices(trunk)"><i
+                class="glyphicon glyphicon-zoom-in" data-toggle="modal" data-target="#table-voices"></i></a>
+            <a (click)="onCleanQueueVoices(trunk)"><i
+                    class="glyphicon glyphicon-trash"></i></a>
+            <a title="back to server" *ngIf="!processEvacuating" (click)="onEvacuation(trunk)"><i
+                    class="glyphicon glyphicon-log-out"></i></a>
+            <img *ngIf="processEvacuating" src="./assets/images/loader.gif" width="15" /> /
+            <span class="text-info">{{trunk.statistic.active}}</span> 
+            <a (click)="onLoadActiveVoices(trunk)"><i
+                class="glyphicon glyphicon-zoom-in" data-toggle="modal" data-target="#table-voices"></i></a>
+            <a (click)="onCleanActiveVoices(trunk)"><i
+                class="glyphicon glyphicon-trash"></i></a> /
+            <span class="text-danger">{{trunk.statistic.retry}}</span>
+
+        </td>
+        <td>
+            <img *ngIf="trunk.processInfo.getPending()" src="./assets/images/loader.gif" width="15" />
+            <a *ngIf="!trunk.processInfo.getPending() && trunk.processInfo.running" (click)="onStopTrunk(trunk)"><i
+                    class="glyphicon glyphicon-pause"></i></a>
+            <a *ngIf="!trunk.processInfo.getPending() && !trunk.processInfo.running" (click)="onStartTrunk(trunk)"><i
+                    class="glyphicon glyphicon-play"></i></a>
+        </td>
+        <td>
+            <img *ngIf="processRegistering" src="./assets/images/loader.gif" width="15" />
+            <a *ngIf="!processRegistering && !isRegisteredTrunk(trunk)" (click)="onRegister(trunk)" title="register on server"><i
+                class="glyphicon glyphicon-link text-danger"></i></a>
+            <a *ngIf="!processRegistering && isRegisteredTrunk(trunk)" (click)="onUnRegister(trunk)" title="unregister"><i
+                    class="glyphicon glyphicon-link text-success"></i></a>
+        </td>
+        <td>{{trunk.processInfo.monit_mem}}Mb / {{trunk.processInfo.monit_cpu}}% / {{trunk.processInfo.pid}}</td>
+        <td>
+            <a (click)="onEdit(trunk)"><i class="glyphicon glyphicon-edit"></i></a>&nbsp;&nbsp;&nbsp;
+            <a (click)="onCopy(trunk)"><i class="glyphicon glyphicon-duplicate text-primary"></i></a>&nbsp;&nbsp;&nbsp;
+            <a (click)="onRemove(trunk)"><i class="glyphicon glyphicon-remove text-danger"></i></a>
+        </td>
+    </tr>
+</table>
+<div class="row">
+    <div class="col-sm-4">
+        <a (click)="onCreate()" class="btn btn-info btn-sm"><i class="glyphicon glyphicon-plus"></i> Create</a>
+    </div>
+</div>
+<h4>Trun provider map:</h4>
+
+<div class="row">
+    <div style="background: #f9faff;
+    border: 1px solid #5bc0de;
+    margin-left: 15px;" class="col-sm-3">
+        <ngx-json-viewer [json]="trunkProviderMap"></ngx-json-viewer>
+    </div>
+</div>
+
+<div class="modal fade" id="table-voices" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4>Voices:</h4>
+            </div>
+            <div class="modal-body">
+                <table class="teble table-condensed table-bordered">
+                    <tr>
+                        <th>#</th>
+                        <th>AcceptedAt</th>
+                        <th>Recipient</th>
+                    </tr>
+                    <tr *ngFor="let voice of voices">
+                        <td>{{voice.clientId}}-{{voice.messageId}}</td>
+                        <td>{{voice.acceptedAt*1000 | date:'yyyy-MM-dd HH:mm:ss'}}</td>
+                        <td>{{voice.recipient}}</td>
+                    </tr>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
